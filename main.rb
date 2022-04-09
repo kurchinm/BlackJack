@@ -18,7 +18,8 @@ loop do
     gaming = 'Y'
     while gaming == 'Y'
       current_game = Game.new(current_player,current_PC)
-      current_game.start
+      current_game.play
+      current_game = nil
       puts "Press Y to continue or any else to exit..."
       gaming = gets.chomp
     end

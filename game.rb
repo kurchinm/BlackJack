@@ -13,31 +13,60 @@ class Game
     @current_PC.bet(10)
   end
 
-  def start
-    @current_player.scores_to_zero
-    @current_PC.scores_to_zero
+  def play
+    @current_player.fold_cards
+    @current_PC.fold_cards
     self.deal_cards
-    @current_player.turn
+    system('clear')
+    self.show_cards(@current_player)
+    game_end = false
+    while !game_end
+      case @current_player.turn
+      when 1
+        @current_player.take_card(@current_card_deck.pull_card)
+        game_end = true if @current_player.cards_num == 3 && @current_PC.cards_num == 3
+      when 2
+      when 3
+        game_end = true
+      end
+      unless game_end
+        case @current_PC.turn 
+        when 1
+          @current_PC.take_card(@current_card_deck.pull_card)
+        when 2
+        end
+      end
+      game_end = true if @current_player.cards_num == 3 && @current_PC.cards_num == 3
+    end
+    self.check_result
   end
 
   def deal_cards
     @current_player.take_card(@current_card_deck.pull_card)
     @current_player.take_card(@current_card_deck.pull_card)
-    @current_player.cards.each do |card|
-      puts "#{card.name}_#{card.suit}"
-    end
-    puts @current_player.scores_calc
-    sleep 1
     @current_PC.take_card(@current_card_deck.pull_card)
     @current_PC.take_card(@current_card_deck.pull_card)
-    @current_PC.cards.each do |card|
+  end
+
+  def show_cards(player)
+    puts "#{player.player_name} cards:"
+    player.cards.each do |card|
       puts "#{card.name}_#{card.suit}"
     end
-    puts @current_PC.scores_calc
+    puts "#{player.player_name} scores: #{player.scores_calc}"
     sleep 1
   end
 
-  def show_cards
+  def check_result
+    show_cards(@current_player)
+    show_cards(@current_PC)
+    if (@current_player.scores_calc > @current_PC.scores_calc && @current_player.scores_calc <= 21) || (@current_player.scores_calc <= 21 && @current_PC.scores_calc > 21)
+      puts "You win!"
+    elsif (@current_player.scores_calc < @current_PC.scores_calc && @current_PC.scores_calc <= 21) || (@current_player.scores_calc > 21 && @current_PC.scores_calc <= 21)
+      puts "You loose!"
+    elsif (@current_player.scores_calc == @current_PC.scores_calc) || (@current_player.scores_calc > 21 && @current_PC.scores_calc > 21)
+      puts "Draw!"
+    end        
   end
 
 end
