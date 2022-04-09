@@ -50,7 +50,7 @@ class Card
       9   
     when '10'
       10 
-    when 'Jack' || 'Queen' || 'King'
+    when 'Jack','Queen','King'
       10
     when 'Ace'
       if total <= 10

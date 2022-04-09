@@ -1,6 +1,6 @@
 #Players
 class Player
-  attr_reader :cards
+  attr_reader :cards, :scores
   def initialize(name = 'PC')
     @player_name = name
     @bank = 100
@@ -15,7 +15,7 @@ class Player
   def scores_calc
     aces = []
     self.cards.each do |card|
-      if card.name = 'Ace'
+      if card.name == 'Ace'
         aces << card
         next
       end
@@ -32,10 +32,21 @@ class Player
   def scores_to_zero
     @scores = 0
   end
+
+  def bet(sum)
+    @bank -= sum if @bank >= sum
+    return sum
+  end
 end
 
 class PlayerPC < Player
+  def turn
+  end
 end
 
 class PlayerUser < Player
+  def turn
+    puts "Your turn! Your scores #{self.scores}. Press 1 to take card, 2 to wait, 3 to open cards."
+    decision = gets.chomp
+  end
 end
