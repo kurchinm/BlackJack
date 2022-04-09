@@ -1,6 +1,7 @@
 #Players
 class Player
   attr_reader :cards, :player_name
+  attr_accessor :bank
   def initialize(name = 'PC')
     @player_name = name
     @bank = 100

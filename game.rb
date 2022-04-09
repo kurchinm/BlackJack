@@ -2,15 +2,16 @@ require_relative 'card'
 require_relative 'player'
 
 class Game
-  attr_reader :current_card_deck, :current_player, :current_PC
+  attr_reader :current_card_deck, :current_player, :current_PC, :bank
   def initialize(player, pc)
     @current_player = player
     @current_PC = pc
     @current_card_deck = CardDeck.new
     @current_card_deck.mix
     puts "Card deck was mixed and is ready now!"
-    @current_player.bet(10)
-    @current_PC.bet(10)
+    puts "Your bank is #{@current_player.bank}"
+    sleep 1
+    @bank = @current_player.bet(10) + @current_PC.bet(10)
   end
 
   def play
@@ -18,9 +19,10 @@ class Game
     @current_PC.fold_cards
     self.deal_cards
     system('clear')
-    self.show_cards(@current_player)
     game_end = false
     while !game_end
+      self.show_cards(@current_player)
+      puts "player PC has #{@current_PC.cards_num} cards"
       case @current_player.turn
       when 1
         @current_player.take_card(@current_card_deck.pull_card)
@@ -37,6 +39,7 @@ class Game
         end
       end
       game_end = true if @current_player.cards_num == 3 && @current_PC.cards_num == 3
+      system('clear')
     end
     self.check_result
   end
@@ -62,10 +65,14 @@ class Game
     show_cards(@current_PC)
     if (@current_player.scores_calc > @current_PC.scores_calc && @current_player.scores_calc <= 21) || (@current_player.scores_calc <= 21 && @current_PC.scores_calc > 21)
       puts "You win!"
+      @current_player.bank += self.bank
     elsif (@current_player.scores_calc < @current_PC.scores_calc && @current_PC.scores_calc <= 21) || (@current_player.scores_calc > 21 && @current_PC.scores_calc <= 21)
       puts "You loose!"
+      @current_PC.bank += self.bank
     elsif (@current_player.scores_calc == @current_PC.scores_calc) || (@current_player.scores_calc > 21 && @current_PC.scores_calc > 21)
       puts "Draw!"
+      @current_player.bank += (self.bank)/2
+      @current_PC.bank += (self.bank)/2
     end        
   end
 
