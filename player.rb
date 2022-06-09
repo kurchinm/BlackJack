@@ -24,18 +24,22 @@ class Player
   def scores_calc
     scores_to_zero
     aces = []
+
     cards.each do |card|
       if card.name == 'Ace'
         aces << card
         next
       end
+
       @scores += card.score
     end
+
     if aces.size != 0
       aces.each do |card|
         @scores += card.score(@scores)
       end
     end
+
     @scores
   end
 
@@ -51,11 +55,7 @@ end
 
 class PlayerPC < Player
   def turn
-    decision = if scores_calc < 17
-                 1
-               else
-                 2
-               end
+    decision = scores_calc < 17 ? 1 : 2
   end
 end
 
@@ -65,3 +65,4 @@ class PlayerUser < Player
     decision = gets.chomp.to_i
   end
 end
+
